@@ -87,7 +87,7 @@ def create_app(model: object | None = None) -> FastAPI:
             "Academic prototype using synthetic bank data. Not suitable for "
             "automated lending decisions or production credit scoring."
         ),
-        version="0.1.0",
+        version="1.0.0",
         lifespan=lifespan,
     )
 
