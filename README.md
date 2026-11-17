@@ -82,3 +82,18 @@ a datos de producción ni validación regulatoria. El PSI no demuestra
 degradación de ROC-AUC o Brier Score, y no desencadena reentrenamientos.
 No debe exponerse a Internet ni utilizarse con datos reales o para
 aprobar/rechazar créditos.
+
+## Versiones y publicación
+
+La versión actual del proyecto es **v1.0.0 (pre-release académica)**. El
+código se prepara en `release/1.0.0`, se revisa por Pull Request y únicamente
+se integra en `main` después de las pruebas. El workflow
+`.github/workflows/release.yml` vuelve a comprobar tests y Docker en `main`
+y, si todo pasa y GitHub permite escribir etiquetas, publica `v1.0.0` como
+**pre-release experimental**. Los cambios se reintegran después a `develop`.
+
+- [Notas de v1.0.0](docs/releases/v1.0.0.md)
+- [Historial de cambios](CHANGELOG.md)
+
+Publicar una versión del repositorio **no** valida clínicamente, financiera ni
+regulatoriamente el modelo ni supone despliegue a producción.
