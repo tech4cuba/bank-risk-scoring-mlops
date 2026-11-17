@@ -61,6 +61,16 @@ probabilidades. La imagen Docker se prueba automáticamente en CI.
 Consulta [la guía de la API](docs/api.md) para iniciar el servicio y realizar
 una consulta con un JSON sintético.
 
+## Reproducir una predicción con el modelo entrenado
+
+Además de las pruebas con modelos simulados, se incluye un procedimiento para
+reentrenar el pipeline con el ZIP sintético original, guardarlo como `.joblib`
+y verificar su uso mediante la API FastAPI. Este artefacto se mantiene
+**fuera de Git**. La CI utiliza un conjunto pequeño de datos ficticios para
+probar guardado y lectura del modelo sin publicar el dataset académico.
+
+Véase [la guía de reproducción y prueba real](docs/reproducir_modelo.md).
+
 ## Monitorización de cambios en las variables
 
 La rama de monitorización compara cohortes de solicitudes a través del PSI,
