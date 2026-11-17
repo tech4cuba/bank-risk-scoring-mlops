@@ -232,3 +232,6 @@ data/*.csv
 data/*.json
 .env.*
 !.env.example
+
+# Generated aggregated drift reports (not version-controlled)
+reports/monitoring/
