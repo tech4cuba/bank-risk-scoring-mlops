@@ -2,7 +2,7 @@
 
 [![MLOps CI](https://github.com/tech4cuba/bank-risk-scoring-mlops/actions/workflows/notebook-ci.yml/badge.svg?branch=develop)](https://github.com/tech4cuba/bank-risk-scoring-mlops/actions/workflows/notebook-ci.yml)
 
-Proyecto académico de **scoring de riesgo crediticio** basado en datos bancarios sintéticos, con desarrollo por ramas Git-Flow, pruebas CI y una API experimental empaquetada con Docker.
+Proyecto académico de **scoring de riesgo crediticio** basado en datos bancarios sintéticos, con desarrollo Git-Flow, pruebas CI, API experimental con Docker y monitorización exploratoria de drift.
 
 > **Limitación:** este modelo no reproduce la política de crédito de BBVA y no está validado para decidir sobre solicitudes reales.
 
@@ -18,6 +18,8 @@ flowchart LR
   T["GitHub Actions"] --> C["Pruebas automáticas"]
   C --> X["Imagen Docker"]
   X --> I
+  F --> DR["Monitor de data drift"]
+  DR --> R["Informe PSI agregado"]
 ```
 
 ## Organización
@@ -28,6 +30,9 @@ flowchart LR
 | `notebooks/02_scoring_crediticio.ipynb` | Entrenamiento y evaluación del scoring |
 | `src/scoring.py` | Inferencia y transformación de probabilidades |
 | `src/api.py` | API FastAPI y validación estricta de 18 variables |
+| `src/monitoring.py` | PSI, faltantes, alertas y reportes agregados |
+| `docs/monitoring.md` | Guía de monitorización y limitaciones |
+| `.github/workflows/drift-ci.yml` | Pruebas y demostración sintética de drift |
 | `tests/` | Validaciones del cuaderno y pruebas unitarias de la API |
 | `docs/api.md` | Guía de ejecución local y con Docker |
 | `.github/workflows/notebook-ci.yml` | Integración continua |
@@ -56,8 +61,24 @@ probabilidades. La imagen Docker se prueba automáticamente en CI.
 Consulta [la guía de la API](docs/api.md) para iniciar el servicio y realizar
 una consulta con un JSON sintético.
 
+## Monitorización de cambios en las variables
+
+La rama de monitorización compara cohortes de solicitudes a través del PSI,
+las tasas de valores faltantes y la aparición de categorías desconocidas.
+Los umbrales son **heurísticos**, y GitHub Actions publica una **demostración
+sintética**, no alertas sobre clientes ni un sistema de vigilancia operativa.
+
+Para analizar el ZIP generado en Colab se puede ejecutar el monitor localmente:
+
+    python -m src.monitoring --dataset-zip /ruta/dataset_bbva_sintetico_v2.zip --current-partition MONITORIZACION_SIN_ETIQUETA_MADURA
+
+Consulta [la guía de monitorización](docs/monitoring.md) para seleccionar
+cohortes, generar informes JSON/Markdown y comprender las limitaciones.
+
 ## Advertencia
 
-El sistema no proporciona autenticación, TLS, monitorización operativa de
-drift ni validación regulatoria. No debe exponerse a Internet ni utilizarse
-con datos reales o para aprobar/rechazar créditos.
+El sistema no proporciona autenticación, TLS, monitorización conectada
+a datos de producción ni validación regulatoria. El PSI no demuestra
+degradación de ROC-AUC o Brier Score, y no desencadena reentrenamientos.
+No debe exponerse a Internet ni utilizarse con datos reales o para
+aprobar/rechazar créditos.
