@@ -1,0 +1,17 @@
+.git
+.github
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.joblib
+*.pkl
+*.zip
+*.pdf
+.ipynb_checkpoints
+notebooks
+tests
+reports
+data
+models
+.env
