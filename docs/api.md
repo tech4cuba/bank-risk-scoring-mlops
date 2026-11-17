@@ -60,7 +60,7 @@ La documentación interactiva aparece en `http://127.0.0.1:8000/docs`.
 
 ```bash
 docker build -t bank-risk-scoring:dev .
-docker run --rm -p 8000:8000 \
+docker run --rm -p 127.0.0.1:8000:8000 \
   -v "$(pwd)/models:/app/models:ro" bank-risk-scoring:dev
 ```
 
