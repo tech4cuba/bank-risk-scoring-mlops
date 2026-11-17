@@ -1,0 +1,20 @@
+{
+  "ingresos_medios_6m_eur": 2958.29,
+  "gastos_ordinarios_medios_6m_eur": 1862.16,
+  "variabilidad_ingresos_6m": 0.0435,
+  "saldo_total_ultimo_mes_eur": 59049.95,
+  "limite_credito_total_ultimo_mes_eur": 0,
+  "credito_utilizado_ultimo_mes_eur": 0,
+  "utilizacion_credito_previa": 0,
+  "cuota_deuda_externa_eur": 495.06,
+  "mora_previa_max_dias": 0,
+  "dti_con_nueva_cuota": 0.3041,
+  "margen_libre_tras_prestamo_eur": 196.47,
+  "accesos_digitales_6m": 42,
+  "antiguedad_laboral_meses": 132,
+  "situacion_laboral": "ASALARIADO",
+  "importe_solicitado_eur": 16196.71,
+  "plazo_meses": 48,
+  "cuota_propuesta_eur": 404.6,
+  "tasa_nominal_anual_simulada": 0.092
+}
