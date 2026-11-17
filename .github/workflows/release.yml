@@ -1,0 +1,87 @@
+name: Release Validation and Publication
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release-validation:
+    name: Verify prototype release
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test requirements
+        run: python -m pip install --disable-pip-version-check -r requirements-test.txt
+      - name: Run complete unit test suite
+        run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Build Docker image
+        run: docker build -t bank-risk-scoring:release .
+      - name: Smoke-test container without a model artifact
+        run: |
+          set -euo pipefail
+          docker run -d --name bank-risk-release-ci -p 127.0.0.1:8000:8000 bank-risk-scoring:release
+          trap 'docker stop bank-risk-release-ci || true' EXIT
+          ready=0
+          for i in $(seq 1 25); do
+            if curl -fsS http://127.0.0.1:8000/health/live; then ready=1; break; fi
+            sleep 2
+          done
+          test "$ready" -eq 1
+          status=$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/health/ready)
+          test "$status" = '503'
+      - name: Verify semantic version
+        run: |
+          set -euo pipefail
+          VERSION=$(tr -d '\n\r' < VERSION)
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test -f "docs/releases/v${VERSION}.md"
+
+  publish-prerelease:
+    name: Tag and publish academic pre-release
+    needs: release-validation
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out release commit
+        uses: actions/checkout@v4
+      - name: Publish tag and GitHub pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          VERSION=$(tr -d '\n\r' < VERSION)
+          TAG="v${VERSION}"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            existing=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.sha')
+            if [ "$existing" = "$GITHUB_SHA" ]; then
+              echo "Release already exists for this commit: $TAG"
+              exit 0
+            fi
+            echo "::error::Existing release $TAG targets another commit"
+            exit 1
+          fi
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" >/dev/null 2>&1; then
+            echo "::error::Tag $TAG exists without a release; manual review required"
+            exit 1
+          fi
+          gh release create "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "$TAG · Academic MLOps prototype (experimental)" \
+            --notes-file "docs/releases/$TAG.md" \
+            --prerelease
+          echo "Published $TAG on $GITHUB_SHA"
