@@ -221,3 +221,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# Synthetic banking project: never commit generated client data or model binaries.
+*.joblib
+*.pkl
+*.zip
+models/
+data/*.csv
+data/*.json
+.env.*
+!.env.example
