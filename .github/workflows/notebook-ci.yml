@@ -51,6 +51,9 @@ jobs:
       - name: Run API tests
         run: python -m unittest discover -s tests -p 'test_api.py' -v
 
+      - name: Test persisted model and FastAPI with a toy synthetic dataset
+        run: python -m unittest discover -s tests -p 'test_model_workflow.py' -v
+
   docker-build:
     name: Build and smoke-test Docker image
     runs-on: ubuntu-latest
