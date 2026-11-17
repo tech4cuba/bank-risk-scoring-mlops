@@ -1,4 +1,4 @@
-name: Notebook CI
+name: ML Notebook CI
 
 on:
   pull_request:
@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   notebook-validation:
-    name: Validate dataset notebook
+    name: Validate data and scoring notebooks
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -25,5 +25,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run static notebook checks
+      - name: Install testing dependency
+        run: python -m pip install --disable-pip-version-check numpy==1.26.4
+
+      - name: Run notebook integrity and scoring checks
         run: python -m unittest discover -s tests -p 'test_*.py' -v
