@@ -2,9 +2,8 @@
 
 [![MLOps CI](https://github.com/tech4cuba/bank-risk-scoring-mlops/actions/workflows/notebook-ci.yml/badge.svg?branch=develop)](https://github.com/tech4cuba/bank-risk-scoring-mlops/actions/workflows/notebook-ci.yml)
 
-Proyecto académico de **scoring de riesgo crediticio** basado en datos bancarios sintéticos, con desarrollo Git-Flow, pruebas CI, API experimental con Docker y monitorización exploratoria de drift.
+Proyecto de **scoring de riesgo crediticio** basado en datos bancarios sintéticos, con desarrollo Git-Flow, pruebas CI, API experimental con Docker y monitorización exploratoria de drift.
 
-> **Limitación:** este modelo no reproduce la política de crédito de BBVA y no está validado para decidir sobre solicitudes reales.
 
 ## Arquitectura
 
@@ -75,10 +74,9 @@ Véase [la guía de reproducción y prueba real](docs/reproducir_modelo.md).
 
 La rama de monitorización compara cohortes de solicitudes a través del PSI,
 las tasas de valores faltantes y la aparición de categorías desconocidas.
-Los umbrales son **heurísticos**, y GitHub Actions publica una **demostración
-sintética**, no alertas sobre clientes ni un sistema de vigilancia operativa.
+Los umbrales son **heurísticos**, y GitHub Actions publica una **demostración**.
 
-Para analizar el ZIP generado en Colab se puede ejecutar el monitor localmente:
+Para analizar el conjunto de dataframes en el comprimido ZIP generado en Colab, se puede ejecutar el monitor localmente:
 
     python -m src.monitoring --dataset-zip /ruta/dataset_bbva_sintetico_v2.zip --current-partition MONITORIZACION_SIN_ETIQUETA_MADURA
 
@@ -90,12 +88,10 @@ cohortes, generar informes JSON/Markdown y comprender las limitaciones.
 El sistema no proporciona autenticación, TLS, monitorización conectada
 a datos de producción ni validación regulatoria. El PSI no demuestra
 degradación de ROC-AUC o Brier Score, y no desencadena reentrenamientos.
-No debe exponerse a Internet ni utilizarse con datos reales o para
-aprobar/rechazar créditos.
 
 ## Versiones y publicación
 
-La versión actual del proyecto es **v1.0.0 (pre-release académica)**. El
+La versión actual del proyecto es **v1.0.0 (pre-release)**. El
 código se prepara en `release/1.0.0`, se revisa por Pull Request y únicamente
 se integra en `main` después de las pruebas. El workflow
 `.github/workflows/release.yml` vuelve a comprobar tests y Docker en `main`
